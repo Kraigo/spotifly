@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:spotifly/base/theme.dart';
 import 'package:spotifly/models/current_track_model.dart';
 import 'package:spotifly/providers/library_provider.dart';
+import 'package:spotifly/providers/playback_provider.dart';
 import 'package:spotifly/providers/window_provider.dart';
 import 'package:spotifly/screens/shell_screen.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +38,9 @@ void main() async {
       ChangeNotifierProvider(
         create: (context) => WindowProvider(),
       ),
+      ChangeNotifierProvider(
+        create: (context) => PlaybackProvider()
+      )
     ],
     child: MyApp(),
   ));

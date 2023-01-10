@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
+import 'package:spotifly/base/routes.dart';
 import 'package:spotifly/providers/library_provider.dart';
 import 'package:spotifly/widgets/widgets.dart';
 
@@ -19,7 +20,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
   }
 
   _loadInitial() async {
-    context.read<LibraryProvider>().loadPlaylist();
+    context.read<LibraryProvider>().loadMyPlaylist();
   }
 
   @override
@@ -50,7 +51,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
             description: playlist.description.isNotEmpty
                 ? playlist.description
                 : 'by ${playlist.owner.displayName}',
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pushNamed(Routes.playlist, arguments: {'playlist': playlist});
+            },
           );
         },
         childCount: playlists.length,

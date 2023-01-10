@@ -36,7 +36,7 @@ class TracksPagination {
   factory TracksPagination.fromMap(Map<String, dynamic> map) {
     return TracksPagination(
       href: map['href'] ?? '',
-      items: List<Track>.from(map['items']?.map((x) => Track.fromMap(x))),
+      items: List<Track>.from(map['items']?.map((x) => Track.fromMap(x)) ?? []),
       limit: map['limit']?.toInt() ?? 0,
       next: map['next'] ?? '',
       offset: map['offset']?.toInt() ?? 0,

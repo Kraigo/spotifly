@@ -1,11 +1,7 @@
 import 'dart:convert';
 
-import 'package:spotify_api/models/external_url.dart';
-import 'package:spotify_api/models/tracks_pagination.dart';
+import 'package:spotify_api/models/models.dart';
 
-import 'followers.dart';
-import 'image.dart';
-import 'owner.dart';
 
 class Playlist {
   final bool collaborative;
@@ -19,7 +15,7 @@ class Playlist {
   final Owner owner;
   final bool public;
   final String snapshot_id;
-  // final TracksPagination tracks;
+  final List<TracksItems> tracks;
   final String type;
   final String uri;
   Playlist({
@@ -34,7 +30,7 @@ class Playlist {
     required this.owner,
     required this.public,
     required this.snapshot_id,
-    // required this.tracks,
+    required this.tracks,
     required this.type,
     required this.uri,
   });
@@ -52,7 +48,7 @@ class Playlist {
       'owner': owner.toMap(),
       'public': public,
       'snapshot_id': snapshot_id,
-      // 'tracks': tracks.toMap(),
+      'tracks': tracks.map((x) => x.toMap()).toList(),
       'type': type,
       'uri': uri,
     };
@@ -72,7 +68,8 @@ class Playlist {
       owner: Owner.fromMap(map['owner']),
       public: map['public'] ?? false,
       snapshot_id: map['snapshot_id'] ?? '',
-      // tracks: TracksPagination.fromMap(map['tracks']),
+      tracks: List<TracksItems>.from(map['tracks']?.containsKey('items')
+        ? map['tracks']['items'].map((x) => TracksItems.fromMap(x)) : []),
       type: map['type'] ?? '',
       uri: map['uri'] ?? '',
     );

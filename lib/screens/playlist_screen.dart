@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:spotifly/data/data.dart';
 
 import 'package:spotifly/models/models.dart';
+import 'package:spotifly/providers/library_provider.dart';
 import 'package:spotifly/widgets/widgets.dart';
 import 'package:spotify_api/models/playlist.dart';
 
@@ -21,10 +23,15 @@ class PlaylistScreen extends StatefulWidget {
 class _PlaylistScreenState extends State<PlaylistScreen> {
   ScrollController? _scrollController;
 
+  _loadInitial() async {
+    await context.read<LibraryProvider>().loadPlaylist(widget.playlist.id);
+  }
+
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    Future.microtask(_loadInitial);
   }
 
   @override
@@ -35,6 +42,10 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final libraryProvider = context.watch<LibraryProvider>();
+    final playlist = libraryProvider.currentPlaylist;
+    final tracks = libraryProvider.currentTracks;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -82,12 +93,13 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
               floating: false,
               stretch: true,
               pinned: false,
-              title: Text(widget.playlist.name),
+              title: Text(playlist?.name ?? 'Loading'),
               bottom: PreferredSize(
                 preferredSize: Size(double.infinity, 320),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 20.0),
-                  child: PlaylistHeader(playlist: widget.playlist),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 20.0),
+                  child: PlaylistHeader(playlist: playlist!),
                 ),
               ),
               flexibleSpace: Container(
@@ -106,9 +118,11 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 12.0
+                padding: const EdgeInsets.symmetric(
+                    vertical: 18.0, horizontal: 12.0),
+                child: TracksList(
+                  tracks: tracks,
                 ),
-                // child: TracksList(tracks: widget.playlist.songs),
               ),
             )
           ],

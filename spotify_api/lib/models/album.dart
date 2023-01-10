@@ -18,7 +18,7 @@ class Album {
   final String name;
   final String release_date;
   final String release_date_precision;
-  final Restrictions restrictions;
+  final Restrictions? restrictions;
   final String type;
   final String uri;
   final String album_group;
@@ -53,7 +53,7 @@ class Album {
       'name': name,
       'release_date': release_date,
       'release_date_precision': release_date_precision,
-      'restrictions': restrictions.toMap(),
+      'restrictions': restrictions?.toMap(),
       'type': type,
       'uri': uri,
       'album_group': album_group,
@@ -65,7 +65,7 @@ class Album {
     return Album(
       album_type: map['album_type'] ?? '',
       total_tracks: map['total_tracks']?.toInt() ?? 0,
-      available_markets: List<String>.from(map['available_markets']),
+      available_markets: List<String>.from(map['available_markets'] ?? []),
       external_urls: ExternalUrl.fromMap(map['external_urls']),
       href: map['href'] ?? '',
       id: map['id'] ?? '',
@@ -73,7 +73,7 @@ class Album {
       name: map['name'] ?? '',
       release_date: map['release_date'] ?? '',
       release_date_precision: map['release_date_precision'] ?? '',
-      restrictions: Restrictions.fromMap(map['restrictions']),
+      restrictions: map['restrictions'] != null ? Restrictions.fromMap(map['restrictions']) : null,
       type: map['type'] ?? '',
       uri: map['uri'] ?? '',
       album_group: map['album_group'] ?? '',

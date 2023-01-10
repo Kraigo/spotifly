@@ -3,6 +3,7 @@ library spotify_api;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify_api/constants/app_contants.dart';
 import 'package:spotify_api/repositories/playlist_repository.dart';
+import 'package:spotify_api/repositories/tracks_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Spotify {
@@ -10,6 +11,7 @@ class Spotify {
   final String redirectUrl;
 
   final playlists = PlaylistRepository();
+  final tracks = TracksRepository();
 
   Spotify({
     required this.clientId,

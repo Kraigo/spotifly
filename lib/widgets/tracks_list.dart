@@ -58,7 +58,7 @@ class TracksList extends StatelessWidget {
               Text(e.album.name, style: textStyle),
             ),
             DataCell(
-              Text(Duration(milliseconds: e.duration_ms).toString(), style: textStyle),
+              Text(_formatDuration(e.duration_ms), style: textStyle),
             ),
           ],
           selected: selected,
@@ -81,5 +81,13 @@ class TracksList extends StatelessWidget {
     }
     //return Colors.green; // Use the default value.
     return Colors.transparent;
+  }
+
+  String _formatDuration(int ms) {
+    final duration = Duration(milliseconds: ms);
+    final minutes = duration.inMinutes;
+    final seconds = duration.inSeconds % 60;
+
+    return '${minutes}:${seconds.toString().padLeft(2, '0')}';
   }
 }

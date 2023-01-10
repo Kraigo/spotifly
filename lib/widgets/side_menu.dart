@@ -35,6 +35,13 @@ class SideMenu extends StatelessWidget {
               AppKeys.navigatorKey.currentState!.pushNamed(Routes.library);
             },
           ),
+          _SideMenuIconTab(
+            iconData: Icons.web_stories,
+            title: 'Login',
+            onTap: () {
+              AppKeys.navigatorKey.currentState!.pushNamed(Routes.login);
+            },
+          ),
           const SizedBox(height: 12.0),
           _LibraryPlaylists(),
         ],

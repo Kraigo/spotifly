@@ -18,7 +18,7 @@ class Track {
   final String href;
   final String id;
   final bool is_playable;
-  final Restrictions restrictions;
+  final Restrictions? restrictions;
   final String name;
   final int popularity;
   final String preview_url;
@@ -59,7 +59,7 @@ class Track {
       'href': href,
       'id': id,
       'is_playable': is_playable,
-      'restrictions': restrictions.toMap(),
+      'restrictions': restrictions?.toMap(),
       'name': name,
       'popularity': popularity,
       'preview_url': preview_url,
@@ -73,8 +73,8 @@ class Track {
   factory Track.fromMap(Map<String, dynamic> map) {
     return Track(
       album: Album.fromMap(map['album']),
-      artists: List<Artist>.from(map['artists']?.map((x) => Artist.fromMap(x))),
-      available_markets: List<String>.from(map['available_markets']),
+      artists: List<Artist>.from(map['artists']?.map((x) => Artist.fromMap(x)) ?? []),
+      available_markets: List<String>.from(map['available_markets'] ?? []),
       disc_number: map['disc_number']?.toInt() ?? 0,
       duration_ms: map['duration_ms']?.toInt() ?? 0,
       explicit: map['explicit'] ?? false,
@@ -82,7 +82,7 @@ class Track {
       href: map['href'] ?? '',
       id: map['id'] ?? '',
       is_playable: map['is_playable'] ?? false,
-      restrictions: Restrictions.fromMap(map['restrictions']),
+      restrictions: map['restrictions'] != null ? Restrictions.fromMap(map['restrictions']) : null,
       name: map['name'] ?? '',
       popularity: map['popularity']?.toInt() ?? 0,
       preview_url: map['preview_url'] ?? '',
