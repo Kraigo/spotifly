@@ -4,6 +4,28 @@ import 'package:spotifly/models/models.dart';
 import 'package:spotifly/widgets/widgets.dart';
 import 'package:spotify_api/models/track.dart';
 
+class SliverTracksList extends StatelessWidget {
+  final List<Track> tracks;
+
+  const SliverTracksList({
+    Key? key,
+    required this.tracks,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((context, index) {
+        final track = tracks[index];
+        return _TrackListItem(
+          track,
+          index: index,
+        );
+      }, childCount: tracks.length),
+    );
+  }
+}
+
 class TracksList extends StatelessWidget {
   final List<Track> tracks;
 
@@ -82,5 +104,52 @@ class TracksList extends StatelessWidget {
     }
     //return Colors.green; // Use the default value.
     return Colors.transparent;
+  }
+}
+
+class _TrackListItem extends StatelessWidget {
+  final Track track;
+  final int index;
+  const _TrackListItem(
+    this.track, {
+    this.index = 0,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final selected = context.watch<PlayerProvider>().selected?.id == track.id;
+    final textStyle =
+        TextStyle(color: Theme.of(context).textTheme.caption!.color);
+    final accentTextStyle = TextStyle(
+      color: selected
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).iconTheme.color,
+    );
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Text(index.toString(), style: textStyle),
+        ),
+        Flexible(
+          fit: FlexFit.tight,
+          child: Text.rich(TextSpan(children: [
+            TextSpan(text: track.name, style: accentTextStyle),
+            const TextSpan(text: '\n'),
+            TextSpan(text: track.artists.first.name, style: textStyle),
+          ])),
+        ),
+        Flexible(
+          fit: FlexFit.tight,
+          child: Text(track.album.name, style: textStyle),
+        ),
+        Flexible(
+          child: TrackDuration(Duration(milliseconds: track.duration_ms),
+              style: textStyle),
+        ),
+      ],
+    );
   }
 }

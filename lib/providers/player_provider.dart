@@ -4,20 +4,21 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:spotify_api/spotify_api.dart';
 
-
 class PlayerProvider extends ChangeNotifier {
   Track? selected;
   late Stream<Duration> trackPosition;
   late Stream<Duration> trackDuration;
+  late Stream<bool> isPlaying;
 
   late AudioPlayer _player;
   late Spotify _spotify;
-  
 
   PlayerProvider() {
     _player = AudioPlayer();
     trackPosition = _player.onPositionChanged;
     trackDuration = _player.onDurationChanged;
+    isPlaying = _player.onPlayerStateChanged
+        .map((event) => event == PlayerState.playing);
 
     final clientId = dotenv.get('SPOTIFY_CLIENT_ID');
     final redirectUrl = dotenv.get('SPOTIFY_REDIRECT_URL');
@@ -31,7 +32,7 @@ class PlayerProvider extends ChangeNotifier {
   }
 
   loadAndStartPlaying(String trackId) async {
-    if (isPlaying()) {
+    if (_isPlaying()) {
       _player.stop();
     }
     final trackUrl = await getTrackUrl(trackId);
@@ -42,7 +43,7 @@ class PlayerProvider extends ChangeNotifier {
   }
 
   startPlaying() async {
-    if (isPlaying()) {
+    if (_isPlaying()) {
       _player.stop();
     }
     if (selected != null) {
@@ -53,7 +54,7 @@ class PlayerProvider extends ChangeNotifier {
   }
 
   stopPlaying() {
-      _player.stop();
+    _player.stop();
   }
 
   pause() async {
@@ -63,7 +64,7 @@ class PlayerProvider extends ChangeNotifier {
   resume() async {
     await _player.resume();
   }
-  bool isPlaying() {
+  bool _isPlaying() {
     return _player.state == PlayerState.playing;
   }
 

@@ -116,13 +116,11 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                 ),
               ),
             ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 18.0, horizontal: 12.0),
-                child: TracksList(
-                  tracks: tracks,
-                ),
+            SliverPadding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 18.0, horizontal: 12.0),
+              sliver: SliverTracksList(
+                tracks: tracks,
               ),
             )
           ],

@@ -105,12 +105,24 @@ class _PlayerControls extends StatelessWidget {
             iconSize: 20.0,
             onPressed: () {},
           ),
-          IconButton(
-            padding: const EdgeInsets.only(),
-            icon: const Icon(Icons.play_circle_outline),
-            iconSize: 34.0,
-            onPressed: () {},
-          ),
+          StreamBuilder(
+              initialData: false,
+              stream: player.isPlaying,
+              builder: (context, snapshot) {
+                final isPlaying = snapshot.data!;
+                return IconButton(
+                  padding: const EdgeInsets.only(),
+                  icon: Icon(isPlaying
+                      ? Icons.pause_circle_outline
+                      : Icons.play_circle_outline),
+                  iconSize: 34.0,
+                  onPressed: () {
+                    isPlaying
+                        ? context.read<PlayerProvider>().pause()
+                        : context.read<PlayerProvider>().resume();
+                  },
+                );
+              }),
           IconButton(
             padding: const EdgeInsets.only(),
             icon: const Icon(Icons.skip_next_outlined),
