@@ -43,7 +43,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
   @override
   Widget build(BuildContext context) {
     final libraryProvider = context.watch<LibraryProvider>();
-    final playlist = libraryProvider.currentPlaylist;
+    final playlist = libraryProvider.currentPlaylist ?? widget.playlist;
     final tracks = libraryProvider.currentTracks;
 
     return Scaffold(

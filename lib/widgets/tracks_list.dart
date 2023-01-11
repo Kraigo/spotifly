@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spotifly/models/models.dart';
+import 'package:spotifly/widgets/widgets.dart';
 import 'package:spotify_api/models/track.dart';
 
 class TracksList extends StatelessWidget {
@@ -29,42 +30,42 @@ class TracksList extends StatelessWidget {
         DataColumn(label: Text('TITLE', style: textStyle)),
         DataColumn(label: Text('ALBUM', style: textStyle)),
         DataColumn(
-            label: Icon(
-          Icons.access_time,
-          color: Theme.of(context).textTheme.caption!.color,
-          size: 18,
-        ),),
+          label: Icon(
+            Icons.access_time,
+            color: Theme.of(context).textTheme.caption!.color,
+            size: 18,
+          ),
+        ),
       ],
       rows: tracks.map((e) {
         final index = tracks.indexOf(e) + 1;
-        final selected =
-            context.watch<CurrentTrackModel>().selected?.id == e.id;
+        final selected = context.watch<PlayerProvider>().selected?.id == e.id;
         final accentTextStyle = TextStyle(
           color: selected
               ? Theme.of(context).primaryColor
               : Theme.of(context).iconTheme.color,
         );
         return DataRow(
-          cells: [
-            DataCell(Text(index.toString(), style: textStyle)),
-            DataCell(Text.rich(TextSpan(children: [
-              TextSpan(text: e.name, style: accentTextStyle),
-              const TextSpan(text: '\n'),
-              TextSpan(text: e.artists.first.name, style: textStyle),
-            ]))
-                // e.title, style: textStyle),
-                ),
-            DataCell(
-              Text(e.album.name, style: textStyle),
-            ),
-            DataCell(
-              Text(_formatDuration(e.duration_ms), style: textStyle),
-            ),
-          ],
-          selected: selected,
-          // onSelectChanged: (_) =>
-          //     context.read<CurrentTrackModel>().selectTrack(e),
-        );
+            cells: [
+              DataCell(Text(index.toString(), style: textStyle)),
+              DataCell(Text.rich(TextSpan(children: [
+                TextSpan(text: e.name, style: accentTextStyle),
+                const TextSpan(text: '\n'),
+                TextSpan(text: e.artists.first.name, style: textStyle),
+              ]))
+                  // e.title, style: textStyle),
+                  ),
+              DataCell(
+                Text(e.album.name, style: textStyle),
+              ),
+              DataCell(TrackDuration(Duration(milliseconds: e.duration_ms),
+                  style: textStyle)),
+            ],
+            selected: selected,
+            onSelectChanged: (_) {
+              context.read<PlayerProvider>().selectTrack(e);
+              context.read<PlayerProvider>().startPlaying();
+            });
       }).toList(),
     );
   }
@@ -81,13 +82,5 @@ class TracksList extends StatelessWidget {
     }
     //return Colors.green; // Use the default value.
     return Colors.transparent;
-  }
-
-  String _formatDuration(int ms) {
-    final duration = Duration(milliseconds: ms);
-    final minutes = duration.inMinutes;
-    final seconds = duration.inSeconds % 60;
-
-    return '${minutes}:${seconds.toString().padLeft(2, '0')}';
   }
 }

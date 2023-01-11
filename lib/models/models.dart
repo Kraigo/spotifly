@@ -1,1 +1,1 @@
-export 'current_track_model.dart';
+export '../providers/player_provider.dart';
