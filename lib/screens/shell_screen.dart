@@ -5,6 +5,8 @@ import 'package:spotifly/base/routes.dart';
 
 import 'package:spotifly/providers/window_provider.dart';
 import 'package:spotifly/widgets/widgets.dart';
+import 'package:spotify_api/models/models.dart';
+import 'package:spotify_api/spotify_api.dart';
 import 'package:window_manager/window_manager.dart';
 
 class ShellScreen extends StatefulWidget {
@@ -20,6 +22,18 @@ class _ShellScreenState extends State<ShellScreen> with WindowListener {
   @override
   void initState() {
     windowManager.addListener(this);
+    final spotify = context.read<Spotify>();
+
+    spotify.httpClient.onEvent.listen(
+      (event) {
+        switch (event.type) {
+          case CloudEventType.authorizationFailed:
+            AppKeys.navigatorKey.currentState?.pushNamed(Routes.login);
+            break;
+        }
+      },
+    );
+
     super.initState();
   }
 

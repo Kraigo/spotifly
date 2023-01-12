@@ -6,17 +6,27 @@ import 'package:spotify_api/repositories/playlist_repository.dart';
 import 'package:spotify_api/repositories/tracks_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'base/http_client.dart';
+
 class Spotify {
+  static late Spotify instance;
+
   final String clientId;
   final String redirectUrl;
+  late HttpClient httpClient;
 
-  final playlists = PlaylistRepository();
-  final tracks = TracksRepository();
+  late PlaylistRepository playlists;
+  late TracksRepository tracks;
 
   Spotify({
     required this.clientId,
     required this.redirectUrl,
-  });
+  }) {
+    instance = this;
+    httpClient = HttpClient();
+    playlists = PlaylistRepository(httpClient.dio);
+    tracks = TracksRepository(httpClient.dio);
+  }
 
   Uri get url => Uri(
           scheme: 'https',

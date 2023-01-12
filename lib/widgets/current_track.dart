@@ -97,13 +97,13 @@ class _PlayerControls extends StatelessWidget {
             padding: const EdgeInsets.only(),
             icon: const Icon(Icons.shuffle),
             iconSize: 20.0,
-            onPressed: () {},
+            onPressed: null,
           ),
           IconButton(
             padding: const EdgeInsets.only(),
             icon: const Icon(Icons.skip_previous_outlined),
             iconSize: 20.0,
-            onPressed: () {},
+            onPressed: null,
           ),
           StreamBuilder(
               initialData: false,
@@ -114,7 +114,7 @@ class _PlayerControls extends StatelessWidget {
                   padding: const EdgeInsets.only(),
                   icon: Icon(isPlaying
                       ? Icons.pause_circle_outline
-                      : Icons.play_circle_outline),
+                      : Icons.play_circle),
                   iconSize: 34.0,
                   onPressed: () {
                     isPlaying
@@ -127,13 +127,13 @@ class _PlayerControls extends StatelessWidget {
             padding: const EdgeInsets.only(),
             icon: const Icon(Icons.skip_next_outlined),
             iconSize: 20.0,
-            onPressed: () {},
+            onPressed: null,
           ),
           IconButton(
             padding: const EdgeInsets.only(),
             icon: const Icon(Icons.repeat),
             iconSize: 20.0,
-            onPressed: () {},
+            onPressed: null,
           ),
         ],
       ),
@@ -154,22 +154,7 @@ class _MoreControls extends StatelessWidget {
           iconSize: 20.0,
           onPressed: () {},
         ),
-        Row(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.volume_up_outlined),
-              onPressed: () {},
-            ),
-            Container(
-              height: 5.0,
-              width: 70.0,
-              decoration: BoxDecoration(
-                color: Colors.grey[800],
-                borderRadius: BorderRadius.circular(2.5),
-              ),
-            ),
-          ],
-        ),
+        _VolumeControl(),
         IconButton(
           icon: const Icon(Icons.fullscreen_outlined),
           onPressed: () {
@@ -256,6 +241,30 @@ class _ProgressLine extends StatelessWidget {
           width: maxWidth * progress,
           decoration: BoxDecoration(
             color: Colors.amber,
+            borderRadius: BorderRadius.circular(2.5),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _VolumeControl extends StatelessWidget {
+  const _VolumeControl({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.volume_up_outlined),
+          onPressed: () {},
+        ),
+        Container(
+          height: 5.0,
+          width: 70.0,
+          decoration: BoxDecoration(
+            color: Colors.grey[800],
             borderRadius: BorderRadius.circular(2.5),
           ),
         ),

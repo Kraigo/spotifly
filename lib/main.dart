@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:spotifly/base/keys.dart';
 import 'package:spotifly/base/theme.dart';
 import 'package:spotifly/providers/player_provider.dart';
 import 'package:spotifly/providers/library_provider.dart';
 import 'package:spotifly/providers/window_provider.dart';
 import 'package:spotifly/screens/shell_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:spotify_api/models/models.dart';
 import 'package:spotify_api/spotify_api.dart';
 import 'package:window_manager/window_manager.dart';
+
+import 'base/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,13 +30,21 @@ void main() async {
   // if (!kIsWeb && (Platform.isMacOS || Platform.isLinux || Platform.isWindows)) {
   //   await DesktopWindow.setMinWindowSize(const Size(600, 800));
   // }
+
+  final spotify = Spotify(
+      clientId: dotenv.get('SPOTIFY_CLIENT_ID'),
+      redirectUrl: dotenv.get('SPOTIFY_REDIRECT_URL'));
+
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(
-        create: (context) => PlayerProvider(),
+      Provider.value(
+        value: spotify,
       ),
       ChangeNotifierProvider(
-        create: (context) => LibraryProvider(),
+        create: (context) => PlayerProvider(spotify: Spotify.instance),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => LibraryProvider(spotify: Spotify.instance),
       ),
       ChangeNotifierProvider(
         create: (context) => WindowProvider(),

@@ -1,13 +1,19 @@
-
-import 'package:spotify_api/base/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:spotify_api/constants/app_contants.dart';
 
 import '../models/models.dart';
 
-class TracksRepository extends DioClient {
-  Future<Track> getTrack(String id) async {
-    var response = await dio.get(ApiPath.getTrack(id));
+class TracksRepository {
+  final Dio dio;
+  const TracksRepository(this.dio);
 
-    return Track.fromMap(response.data);
+  Future<Track?> getTrack(String id) async {
+    try {
+      var response = await dio.get(ApiPath.getTrack(id));
+
+      return Track.fromMap(response.data);
+    } catch (_) {
+      return null;
+    }
   }
 }

@@ -130,7 +130,8 @@ class _TrackListItem extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Flexible(
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 5),
           child: Text(index.toString(), style: textStyle),
         ),
         Flexible(
@@ -145,7 +146,8 @@ class _TrackListItem extends StatelessWidget {
           fit: FlexFit.tight,
           child: Text(track.album.name, style: textStyle),
         ),
-        Flexible(
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 5),
           child: TrackDuration(Duration(milliseconds: track.duration_ms),
               style: textStyle),
         ),

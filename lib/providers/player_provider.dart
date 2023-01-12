@@ -13,12 +13,15 @@ class PlayerProvider extends ChangeNotifier {
   late AudioPlayer _player;
   late Spotify _spotify;
 
-  PlayerProvider() {
+  PlayerProvider({required spotify}) {
+    _spotify = spotify;
     _player = AudioPlayer();
     trackPosition = _player.onPositionChanged;
     trackDuration = _player.onDurationChanged;
     isPlaying = _player.onPlayerStateChanged
         .map((event) => event == PlayerState.playing);
+
+        // _player.setVolume(volume)
 
     final clientId = dotenv.get('SPOTIFY_CLIENT_ID');
     final redirectUrl = dotenv.get('SPOTIFY_REDIRECT_URL');
@@ -28,7 +31,7 @@ class PlayerProvider extends ChangeNotifier {
   Future<String?> getTrackUrl(String id) async {
     final response = await _spotify.tracks.getTrack(id);
 
-    return response.preview_url;
+    return response?.preview_url;
   }
 
   loadAndStartPlaying(String trackId) async {
@@ -64,6 +67,7 @@ class PlayerProvider extends ChangeNotifier {
   resume() async {
     await _player.resume();
   }
+
   bool _isPlaying() {
     return _player.state == PlayerState.playing;
   }

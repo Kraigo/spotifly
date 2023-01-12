@@ -11,3 +11,4 @@ export 'token.dart';
 export 'track.dart';
 export 'tracks_pagination.dart';
 export 'tracks_items.dart';
+export 'cloud_error.dart';

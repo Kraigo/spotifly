@@ -6,25 +6,25 @@ import 'package:spotify_api/spotify_api.dart';
 class LibraryProvider extends ChangeNotifier {
   bool _loading = false;
   bool get loading => _loading;
-  late Spotify spotify;
+  late Spotify _spotify;
   List<Playlist> playlists = [];
   Playlist? currentPlaylist;
 
   List<Track> get currentTracks =>
       currentPlaylist?.tracks.map((e) => e.track!).toList() ?? [];
 
-  LibraryProvider() {
-    final clientId = dotenv.get('SPOTIFY_CLIENT_ID');
-    final redirectUrl = dotenv.get('SPOTIFY_REDIRECT_URL');
-    spotify = Spotify(clientId: clientId, redirectUrl: redirectUrl);
+  LibraryProvider({required Spotify spotify}) {
+    _spotify = spotify;
   }
 
   loadMyPlaylist() async {
     _loading = true;
     notifyListeners();
     try {
-      final response = await spotify.playlists.getMyPlaylists();
-      playlists = response.items;
+      final response = await _spotify.playlists.getMyPlaylists();
+      if (response != null) {
+        playlists = response.items;
+      }
     } finally {
       _loading = false;
       notifyListeners();
@@ -35,7 +35,7 @@ class LibraryProvider extends ChangeNotifier {
     _loading = true;
     notifyListeners();
     try {
-      final response = await spotify.playlists.getPlaylist(id);
+      final response = await _spotify.playlists.getPlaylist(id);
       currentPlaylist = response;
     } finally {
       _loading = false;

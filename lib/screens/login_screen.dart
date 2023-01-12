@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:spotifly/base/keys.dart';
+import 'package:spotifly/base/routes.dart';
 import 'package:spotifly/widgets/prompt_dialog.dart';
 import 'package:spotify_api/spotify_api.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
@@ -21,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,10 +39,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       return PromptDialog();
                     },
                   );
-                  
 
                   if (result != null) {
                     spotify.setAuthorization(result);
+                    AppKeys.navigatorKey.currentState!.pushNamed(Routes.home);
                   }
                 },
                 child: Text("login")),

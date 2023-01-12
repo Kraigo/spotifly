@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:spotify_api/base/dio.dart';
 import 'package:spotify_api/constants/app_contants.dart';
 import 'package:spotify_api/models/token.dart';
 
-class AuthorizationRepository extends DioClient {
+class AuthorizationRepository {
+  final Dio dio;
+  const AuthorizationRepository(this.dio);
+
   Future<Token> getAccessToken({
     required String code,
     required redirectUri,
