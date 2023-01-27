@@ -7,3 +7,4 @@ export 'profile_menu.dart';
 export 'circle_button.dart';
 export 'prompt_dialog.dart';
 export 'track_duration.dart';
+export 'navigation_buttons.dart';

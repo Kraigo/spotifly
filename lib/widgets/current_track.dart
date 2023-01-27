@@ -9,32 +9,32 @@ class CurrentTrack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isFull = (MediaQuery.of(context).size.width > 800);
+    final window = context.watch<WindowProvider>();
     return Container(
-      height: isFull ? 84.0 : 200,
+      height: window.isPinned ? 200 : 84.0,
       width: double.infinity,
       color: Colors.black87,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: isFull
-            ? Row(
-                children: [
-                  _TrackInfo(),
-                  const Spacer(),
-                  _PlayerControls(),
-                  const Spacer(),
-                  _MoreControls(),
-                ],
-              )
-            : Column(
-                children: [
-                  _TrackInfo(),
-                  const Spacer(),
-                  _PlayerControls(),
-                  const Spacer(),
-                  _MoreControls(),
-                ],
-              ),
+        child: window.isPinned
+            ? Column(children: [
+                _TrackInfo(),
+                const Spacer(),
+                _PlayerControls(),
+                const Spacer(),
+                _MoreControls(),
+              ])
+            : Row(children: [
+                Expanded(child: _TrackInfo()),
+                SizedBox(
+                  width: 12,
+                ),
+                Expanded(child: _PlayerControls()),
+                SizedBox(
+                  width: 12,
+                ),
+                Expanded(child: _MoreControls()),
+              ]),
       ),
     );
   }
@@ -44,10 +44,13 @@ class _TrackInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final player = context.watch<PlayerProvider>();
+    final window = context.watch<WindowProvider>();
     final track = player.selected;
     if (track == null) return const SizedBox.shrink();
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment:
+          window.isPinned ? MainAxisAlignment.center : MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.max,
       children: [
         Image.network(
           track!.album.images.first.url,
@@ -56,26 +59,32 @@ class _TrackInfo extends StatelessWidget {
           fit: BoxFit.cover,
         ),
         const SizedBox(width: 12.0),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              track.name,
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-            const SizedBox(height: 4.0),
-            Text(
-              track.artists.first.name,
-              style: Theme.of(context)
-                  .textTheme
-                  .subtitle1!
-                  .copyWith(color: Colors.grey[300], fontSize: 12.0),
-            )
-          ],
+        Flexible(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                track.name,
+                style: Theme.of(context).textTheme.bodyText1,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+              ),
+              const SizedBox(height: 4.0),
+              Text(
+                track.artists.map((e) => e.name).join(', '),
+                overflow: TextOverflow.fade,
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle1!
+                    .copyWith(color: Colors.grey[300], fontSize: 12.0),
+              )
+            ],
+          ),
         ),
         const SizedBox(width: 12.0),
         IconButton(
+          iconSize: 16,
           icon: const Icon(Icons.favorite_border),
           onPressed: () {},
         ),
@@ -88,7 +97,8 @@ class _PlayerControls extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final player = context.watch<PlayerProvider>();
-    final selected = player.selected;
+    final track = player.selected;
+    if (track == null) return const SizedBox.shrink();
     return Column(children: [
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -146,8 +156,10 @@ class _PlayerControls extends StatelessWidget {
 class _MoreControls extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final window = context.watch<WindowProvider>();
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment:
+          window.isPinned ? MainAxisAlignment.center : MainAxisAlignment.end,
       children: [
         IconButton(
           icon: const Icon(Icons.devices_outlined),
@@ -178,6 +190,7 @@ class _ProgressIndicator extends StatelessWidget {
     final player = context.watch<PlayerProvider>();
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
       children: [
         StreamBuilder(
             initialData: const Duration(milliseconds: 0),
@@ -225,26 +238,30 @@ class _ProgressLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final maxWidth = MediaQuery.of(context).size.width * 0.3;
-    return Stack(
-      children: [
-        Container(
-          height: 5.0,
-          width: maxWidth,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(2.5),
-          ),
-        ),
-        Container(
-          height: 5.0,
-          width: maxWidth * progress,
-          decoration: BoxDecoration(
-            color: Colors.amber,
-            borderRadius: BorderRadius.circular(2.5),
-          ),
-        ),
-      ],
+    // final maxWidth = MediaQuery.of(context).size.width * 0.3;
+    return Expanded(
+      child: LayoutBuilder(builder: (context, constraints) {
+        return Stack(
+          children: [
+            Container(
+              height: 5.0,
+              width: constraints.biggest.width,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(2.5),
+              ),
+            ),
+            Container(
+              height: 5.0,
+              width: constraints.biggest.width * progress,
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.circular(2.5),
+              ),
+            ),
+          ],
+        );
+      }),
     );
   }
 }

@@ -15,14 +15,14 @@ class SideMenu extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(height: 30,),
-          _SideMenuIconTab(
-            iconData: Icons.home,
-            title: 'Home',
-            onTap: () {
+          // _SideMenuIconTab(
+          //   iconData: Icons.home_outlined,
+          //   title: 'Home',
+          //   onTap: () {
 
-              AppKeys.navigatorKey.currentState!.pushNamed(Routes.home);
-            },
-          ),
+          //     AppKeys.navigatorKey.currentState!.pushNamed(Routes.home);
+          //   },
+          // ),
           _SideMenuIconTab(
             iconData: Icons.search,
             title: 'Search',
@@ -33,13 +33,6 @@ class SideMenu extends StatelessWidget {
             title: 'Your Library',
             onTap: () {
               AppKeys.navigatorKey.currentState!.pushNamed(Routes.library);
-            },
-          ),
-          _SideMenuIconTab(
-            iconData: Icons.web_stories,
-            title: 'Login',
-            onTap: () {
-              AppKeys.navigatorKey.currentState!.pushNamed(Routes.login);
             },
           ),
           const SizedBox(height: 12.0),

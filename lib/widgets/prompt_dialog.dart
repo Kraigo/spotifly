@@ -25,10 +25,10 @@ class _PromptDialogState extends State<PromptDialog> {
   @override
   Widget build(BuildContext context) {
      return AlertDialog(
-          title: Text('TextField in Dialog'),
+          title: Text('Enter auth token'),
           content: TextField(
             controller: _textFieldController,
-            decoration: InputDecoration(hintText: "Text Field in Dialog"),
+            decoration: InputDecoration(hintText: "Token"),
           ),
           actions: <Widget>[
             MaterialButton(

@@ -10,13 +10,13 @@ class Routes {
   static const playlist = '/playlist';
   static const library = '/library';
 
-  static MaterialPageRoute onGenerateRoute(RouteSettings settings) {
+  static Route onGenerateRoute(RouteSettings settings) {
     Map<String, dynamic>? pageArguments;
 
     if (settings.arguments != null) {
       pageArguments = settings.arguments as Map<String, dynamic>;
     }
-
+    
     var routes = <String, WidgetBuilder>{
       Routes.login: (context) => const LoginScreen(),
       Routes.home: (context) => const HomeScreen(),
@@ -24,7 +24,12 @@ class Routes {
       Routes.playlist: (context) =>
           PlaylistScreen(playlist: pageArguments?['playlist']),
     };
+    
     WidgetBuilder builder = routes[settings.name] ?? routes.values.first;
-    return MaterialPageRoute(builder: (ctx) => builder(ctx), settings: settings);
+
+    return MaterialPageRoute(
+      builder: (ctx) => builder(ctx),
+      settings: settings,
+    );
   }
 }

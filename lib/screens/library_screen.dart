@@ -26,7 +26,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Library")),
+      appBar: AppBar(
+        title: const Text("Library"),
+        backgroundColor: Colors.transparent,
+      ),
       // body: _buildList(),
       body: CustomScrollView(slivers: [_buildList()]),
     );
@@ -35,37 +38,33 @@ class _LibraryScreenState extends State<LibraryScreen> {
   Widget _buildList() {
     final playlists = context.watch<LibraryProvider>().playlists;
 
-    return SliverGrid(
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 254.0,
-        mainAxisSpacing: 20.0,
-        crossAxisSpacing: 20.0,
-        childAspectRatio: 180 / 254,
+    return SliverPadding(
+      padding: EdgeInsets.all(12),
+      sliver: SliverGrid(
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 254.0,
+          mainAxisSpacing: 20.0,
+          crossAxisSpacing: 20.0,
+          childAspectRatio: 180 / 254,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (BuildContext context, int index) {
+            final playlist = playlists[index];
+            return AlbumCard(
+              name: playlist.name,
+              imageUrl: playlist.images.first.url,
+              description: playlist.description.isNotEmpty
+                  ? playlist.description
+                  : 'by ${playlist.owner.displayName}',
+              onTap: () {
+                Navigator.of(context).pushNamed(Routes.playlist,
+                    arguments: {'playlist': playlist});
+              },
+            );
+          },
+          childCount: playlists.length,
+        ),
       ),
-      delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          final playlist = playlists[index];
-          return AlbumCard(
-            name: playlist.name,
-            imageUrl: playlist.images.first.url,
-            description: playlist.description.isNotEmpty
-                ? playlist.description
-                : 'by ${playlist.owner.displayName}',
-            onTap: () {
-              Navigator.of(context).pushNamed(Routes.playlist, arguments: {'playlist': playlist});
-            },
-          );
-        },
-        childCount: playlists.length,
-      ),
-    );
-
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        final playlist = playlists[index];
-        return Text(playlist.name);
-      },
-      itemCount: playlists.length,
     );
   }
 }

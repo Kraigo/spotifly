@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 import 'package:spotifly/base/keys.dart';
 import 'package:spotifly/base/routes.dart';
 import 'package:spotifly/widgets/prompt_dialog.dart';
@@ -14,51 +15,39 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late Spotify spotify;
   @override
-  void initState() {
-    final clientId = dotenv.get('SPOTIFY_CLIENT_ID');
-    final redirectUrl = dotenv.get('SPOTIFY_REDIRECT_URL');
-    spotify = Spotify(clientId: clientId, redirectUrl: redirectUrl);
-
-    super.initState();
+  Widget build(BuildContext context) {
+    return Scaffold(body: Center(child: _LoginForm()));
   }
+}
+
+class _LoginForm extends StatelessWidget {
+  const _LoginForm({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          children: [
-            ElevatedButton(
-                onPressed: () async {
-                  getAccessToken();
-                  final result = await showDialog(
-                    context: context,
-                    builder: (context) {
-                      return PromptDialog();
-                    },
-                  );
+    final spotify = context.read<Spotify>();
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(
+          onPressed: () async {
+            spotify.openLogin();
+            final result = await showDialog(
+              context: context,
+              builder: (context) {
+                return const PromptDialog();
+              },
+            );
 
-                  if (result != null) {
-                    spotify.setAuthorization(result);
-                    AppKeys.navigatorKey.currentState!.pushNamed(Routes.home);
-                  }
-                },
-                child: Text("login")),
-            ElevatedButton(
-                onPressed: () async {
-                  final result = await spotify.playlists.getMyPlaylists();
-                  debugPrint('result');
-                },
-                child: Text("get playlists")),
-          ],
+            if (result != null) {
+              spotify.setAuthorization(result);
+              AppKeys.navigatorKey.currentState!.pushNamed(Routes.library);
+            }
+          },
+          child: const Text("Login"),
         ),
-      ),
+      ],
     );
-  }
-
-  Future getAccessToken() async {
-    spotify.openLogin();
   }
 }

@@ -42,9 +42,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final libraryProvider = context.watch<LibraryProvider>();
-    final playlist = libraryProvider.currentPlaylist ?? widget.playlist;
-    final tracks = libraryProvider.currentTracks;
+    final playlist = widget.playlist;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -52,25 +50,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leadingWidth: 140.0,
-        leading: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleButton(
-                  icon: Icons.chevron_left,
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  }),
-              const SizedBox(width: 16.0),
-              CircleButton(
-                  icon: Icons.chevron_right,
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  }),
-            ],
-          ),
-        ),
+        leading: NavigationButtons(),
         actions: [ProfileMenu()],
       ),
       body: Container(
@@ -121,7 +101,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                     vertical: 18.0, horizontal: 12.0),
-                child: TracksList(tracks: tracks),
+                child: _PlaylistTracks(),
               ),
             ),
             // SliverPadding(
@@ -151,5 +131,27 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         // ),
       ),
     );
+  }
+}
+
+class _PlaylistTracks extends StatelessWidget {
+  const _PlaylistTracks({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final libraryProvider = context.watch<LibraryProvider>();
+
+    if (libraryProvider.loading) {
+      return Center(
+        child: SizedBox(
+          height: 2,
+          child: LinearProgressIndicator(
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+      );
+    }
+
+    return TracksList(tracks: libraryProvider.currentTracks);
   }
 }

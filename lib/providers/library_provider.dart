@@ -33,6 +33,7 @@ class LibraryProvider extends ChangeNotifier {
 
   loadPlaylist(String id) async {
     _loading = true;
+    currentPlaylist = null;
     notifyListeners();
     try {
       final response = await _spotify.playlists.getPlaylist(id);
